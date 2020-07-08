@@ -1,0 +1,46 @@
+---
+- name: Win Docker | Ensure the required NuGet package provider version is installed
+  win_shell: Find-PackageProvider -Name Nuget -ForceBootstrap -IncludeDependencies -Force
+
+- name: Win Docker | Add PowerShell modules
+  win_psmodule:
+    name: "{{ item.name }}"
+    repository: "{{ item.repository }}"
+    state: present
+  loop: "{{ modules }}"
+
+- name: Win Docker | Test if Docker needs install
+  win_shell: docker version
+  register: docker_command
+  ignore_errors: yes
+
+- name: Win Docker | Install Docker
+  win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Force
+  ignore_errors: yes
+  when: docker_command.rc != 0
+
+- name: Win Docker | Test if node needs reboot
+  win_shell: docker version
+  register: docker_command
+  ignore_errors: yes
+
+- name: Win Docker | Reboot docker command fails
+  win_reboot:
+  when: docker_command.rc != 0
+
+- name: Win Docker | Ensure that docker service is started properly
+  win_service:
+    name: docker
+    start_mode: auto
+    state: started
+  when: docker_command.rc != 0
+
+- name: Win Docker | Set linux containers on Windows mode
+  win_environment:
+    state: present
+    name: LCOW_SUPPORTED
+    value: 1
+    level: machine
+
+- name: Win Docker | Docker version
+  win_shell: docker version

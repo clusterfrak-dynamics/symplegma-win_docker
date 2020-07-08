@@ -1,0 +1,10 @@
+---
+modules:
+  - name: DockerMsftProvider
+    repository: PSGallery
+
+packages:
+  - name: docker
+    provider: DockerMsftProvider
+
+force_reboot: false
