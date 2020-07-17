@@ -1,4 +1,21 @@
 ---
+- name: Win Docker | Install Windows Features
+  win_feature:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ win_features }}"
+  register: windows_features
+
+- name: Win Docker | Reboot node is needed
+  win_reboot:
+  when: windows_features.changed
+
+- name: Win Docker | Configure RoutingOnly
+  win_shell: Install-RemoteAccess -VpnType RoutingOnly
+
+- name: Win Docker | Start RemoteAccess
+  win_shell: Start-Service RemoteAccess
+
 - name: Win Docker | Ensure the required NuGet package provider version is installed
   win_shell: Find-PackageProvider -Name Nuget -ForceBootstrap -IncludeDependencies -Force
 

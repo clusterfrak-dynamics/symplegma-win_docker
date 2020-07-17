@@ -1,4 +1,10 @@
 ---
+win_features:
+  - RemoteAccess
+  - RSAT-RemoteAccess-PowerShell
+  - Routing
+  - Containers
+
 modules:
   - name: DockerMsftProvider
     repository: PSGallery
@@ -6,5 +12,3 @@ modules:
 packages:
   - name: docker
     provider: DockerMsftProvider
-
-force_reboot: false
