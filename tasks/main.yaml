@@ -29,17 +29,17 @@
 - name: Win Docker | Test if Docker needs install
   win_shell: docker version
   register: docker_command
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: Win Docker | Install Docker
   win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Force
-  ignore_errors: yes
+  ignore_errors: true
   when: docker_command.rc != 0
 
 - name: Win Docker | Test if node needs reboot
   win_shell: docker version
   register: docker_command
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: Win Docker | Reboot docker command fails
   win_reboot:
