@@ -1,0 +1,5 @@
+---
+- name: "Win Docker | Reboot node"
+  win_reboot:
+  listen:
+    - "reboot windows node"
