@@ -4,11 +4,11 @@
     name: "{{ item }}"
     state: present
   loop: "{{ win_features }}"
-  register: windows_features
+  notify:
+    - "reboot windows node"
 
-- name: Win Docker | Reboot node is needed
-  win_reboot:
-  when: windows_features.changed
+# NOTE: ansible will wait for the node to come back up again
+- meta: flush_handlers
 
 - name: Win Docker | Configure RoutingOnly
   win_shell: Install-RemoteAccess -VpnType RoutingOnly
