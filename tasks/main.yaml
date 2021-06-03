@@ -8,7 +8,8 @@
     - "reboot windows node"
 
 # NOTE: ansible will wait for the node to come back up again
-- meta: flush_handlers
+- name: Win Docker | Reboot node if Windows Features got installed
+  meta: flush_handlers
 
 - name: Win Docker | Configure RoutingOnly
   win_shell: Install-RemoteAccess -VpnType RoutingOnly
@@ -29,7 +30,7 @@
 - name: Win Docker | Test if Docker needs install
   win_shell: docker version
   register: docker_command
-  ignore_errors: true
+  failed_when: false
 
 - name: Win Docker | Install Docker
   win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Force
